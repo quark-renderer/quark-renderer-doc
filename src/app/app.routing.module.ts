@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { SignInComponent } from './blog/user/sign-in/sign-in.component';
-import { RetrievePwdComponent } from './blog/user/retrieve-pwd/retrieve-pwd.component';
-import { SignUpComponent } from './blog/user/sign-up/sign-up.component';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { SignInComponent } from "./blog/user/sign-in/sign-in.component";
+import { RetrievePwdComponent } from "./blog/user/retrieve-pwd/retrieve-pwd.component";
+import { SignUpComponent } from "./blog/user/sign-up/sign-up.component";
 
-const routes: Routes =[
+const routes: Routes = [
 	{
 		path: "",
 		redirectTo: "posts",
@@ -13,6 +13,10 @@ const routes: Routes =[
 	{
 		path: "home",
 		loadChildren: () => import("./blog/home/home.module").then(m => m.HomeModule)
+	},
+	{
+		path: "examples",
+		loadChildren: () => import("./blog/examples/examples.module").then(m => m.ExamplesModule)
 	},
 	{
 		path: "posts",

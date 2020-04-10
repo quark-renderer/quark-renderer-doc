@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var vectorUtil = require(&quot;../../utils/vector_util&quot;);
+
+/* eslint-disable no-unused-vars */
+
+<span id='qrenderer-graphic-drag-Draggable'>/**
+</span> * @abstract
+ * @class qrenderer.graphic.drag.Draggable
+ * 
+ * 
+ * 
+ * 提供拖拽功能，所有需要拖拽功能的元素都可以混入此类的实现。此实现依赖事件机制，混入此实现的类需要预先混入 eventful 接口。
+ * @author 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var Draggable = function Draggable() {
+<span id='qrenderer-graphic-drag-Draggable-property-draggable'>  /**
+</span>   * @property {Boolean} draggable
+   * Whether it can be dragged.
+   */
+  this.draggable = false;
+<span id='qrenderer-graphic-drag-Draggable-property-dragging'>  /**
+</span>   * @property {Boolean} dragging
+   * Whether is it dragging.
+   */
+
+  this.dragging = false;
+};
+
+Draggable.prototype = {
+  constructor: Draggable,
+
+<span id='qrenderer-graphic-drag-Draggable-method-beforeMove'>  /**
+</span>   * @method beforeMove
+   * 
+   * 
+   * 
+   * 钩子函数，在元素发生移动之前执行。
+   * 如果 beforeMove 返回 false ，元素不会发生移动，API 调用者可以利用此钩子实现复杂的控制。
+   */
+  beforeMove: function beforeMove(dx, dy, event, el) {
+    return true;
+  },
+
+<span id='qrenderer-graphic-drag-Draggable-method-move'>  /**
+</span>   * @method move
+   * 
+   * Move element
+   * 
+   * 移动元素
+   * 
+   * @param  {Number} dx dx on the global space.
+   * @param  {Number} dy dy on the global space.
+   * @param  {Event} event event object.
+   */
+  move: function move(dx, dy, event) {
+    this.trigger(&quot;beforeMove&quot;, this);
+
+    switch (this.draggable) {
+      case &#39;horizontal&#39;:
+        dy = 0;
+        break;
+
+      case &#39;vertical&#39;:
+        dx = 0;
+        break;
+    }
+
+    this.trigger(&quot;moving&quot;, this); //TODO:trigger moving event when animating the position property.
+
+    vectorUtil.add(this.position, this.position, [dx, dy]);
+    this.dirty();
+    this.trigger(&quot;afterMove&quot;, this);
+    this.afterMove();
+  },
+
+<span id='qrenderer-graphic-drag-Draggable-method-afterMove'>  /**
+</span>   * @method afterMove
+   * 钩子函数，在元素发生移动之后执行。
+   */
+  afterMove: function afterMove(dx, dy, event, el) {}
+};
+var _default = Draggable;
+module.exports = _default;</pre>
+</body>
+</html>

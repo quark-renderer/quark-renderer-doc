@@ -12,7 +12,9 @@
         "console": "Console",
         "userlist": "UserList",
         "read": "Read",
-        "write": "Write"
+        "write": "Write",
+        "examples": "Examples",
+        "api": "API"
     },
     "post": {
         "publish": "publish"

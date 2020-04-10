@@ -1,0 +1,23 @@
+<div class="container" [@flyIn]="'active'">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a routerLink="link" class="list-group-item">连接线</a>
+            </div>
+            <div class="list-group">
+                <a routerLink="group" class="list-group-item">组</a>
+            </div>
+            <div class="list-group">
+                <a routerLink="flow" class="list-group-item">流程图</a>
+            </div>
+            <div class="list-group">
+                <a routerLink="bpmn" class="list-group-item">BPMN</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="mng-main-container">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
+
+var classUtil = require(&quot;../../utils/class_util&quot;);
+
+var _sub_pixel_optimize = require(&quot;../../utils/sub_pixel_optimize&quot;);
+
+var subPixelOptimizeLine = _sub_pixel_optimize.subPixelOptimizeLine;
+
+var CableLike = require(&quot;../link/CableLike&quot;);
+
+var Path = require(&quot;../Path&quot;);
+
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+<span id='qrenderer-graphic-line-Line'>/**
+</span> * @class qrenderer.graphic.line.Line 
+ * Line.
+ * 
+ * 
+ * 直线。所有线条的特征是：
+ * - 线条可以移动位置，但不能进行其它仿射变换，scale/rotate/skew 都不可以。所以计算线条的相关参数时可以做简化，只要计算 position 和 translate 就可以了。
+ * - 线条总是画在全局空间中。
+ * - 线条不能加到 Group 中。
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var Line =
+/*#__PURE__*/
+function (_Path) {
+  _inherits(Line, _Path);
+
+<span id='qrenderer-graphic-line-Line-method-constructor'>  /**
+</span>   * @method constructor Line
+   * @param {Object} options 
+   */
+  function Line(options) {
+    var _this;
+
+    _classCallCheck(this, Line);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Line).call(this, dataUtil.merge({
+      shape: {
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 0,
+        percent: 1
+      },
+      style: {
+        stroke: &#39;#000&#39;,
+        fill: null
+      }
+    }, options, true)));
+<span id='qrenderer-graphic-line-Line-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;line&#39;;
+    classUtil.inheritProperties(_assertThisInitialized(_this), CableLike, _this.options);
+    classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;, &#39;shape&#39;]);
+    _this.transformable = false;
+    return _this;
+  }
+<span id='qrenderer-graphic-line-Line-method-buildPath'>  /**
+</span>   * @method buildPath
+   * Build the path of current line, the data structure is like the path attribute in SVG.
+   * 
+   * 
+   * 构建当前线条的路径，数据结构类似 SVG 中的 path 属性。
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+
+
+  _createClass(Line, [{
+    key: &quot;buildPath&quot;,
+    value: function buildPath(ctx, shape) {
+      var x1;
+      var y1;
+      var x2;
+      var y2;
+
+      if (this.subPixelOptimize) {
+        var subPixelOptimizeOutputShape = {};
+        subPixelOptimizeLine(subPixelOptimizeOutputShape, shape, this.style);
+        x1 = subPixelOptimizeOutputShape.x1;
+        y1 = subPixelOptimizeOutputShape.y1;
+        x2 = subPixelOptimizeOutputShape.x2;
+        y2 = subPixelOptimizeOutputShape.y2;
+      } else {
+        x1 = shape.x1;
+        y1 = shape.y1;
+        x2 = shape.x2;
+        y2 = shape.y2;
+      }
+
+      var percent = shape.percent;
+
+      if (percent === 0) {
+        return;
+      }
+
+      ctx.moveTo(x1, y1);
+
+      if (percent &lt; 1) {
+        x2 = x1 * (1 - percent) + x2 * percent;
+        y2 = y1 * (1 - percent) + y2 * percent;
+      }
+
+      ctx.lineTo(x2, y2);
+    }
+<span id='qrenderer-graphic-line-Line-method-renderTransformControls'>    /**
+</span>     * @protected
+     * @method renderTransformControls
+     * Disable renderTransformControls method in Element, because we don&#39;t allow transformation on lines.
+     * 
+     * 
+     * 禁用 Elemnet 类上的 renderTransformControls 方法，因为我们不希望在线条上使用几何变换。
+     * @param {*} ctx 
+     * @param {*} prevEl 
+     */
+
+  }, {
+    key: &quot;renderTransformControls&quot;,
+    value: function renderTransformControls(ctx, prevEl) {}
+<span id='qrenderer-graphic-line-Line-method-pointAt'>    /**
+</span>     * @method pointAt
+     * Get point at percent, this value is between 0 and 1.
+     * 
+     * 
+     * 按照比例获取线条上的点，取值范围在 0 到 1 之间。
+     * @param  {Number} percent
+     * @return {Array&lt;Number&gt;}
+     */
+
+  }, {
+    key: &quot;pointAt&quot;,
+    value: function pointAt(p) {
+      var shape = this.shape;
+      return [shape.x1 * (1 - p) + shape.x2 * p, shape.y1 * (1 - p) + shape.y2 * p];
+    }
+  }, {
+    key: &quot;firstPoint&quot;,
+    value: function firstPoint() {
+      return [this.shape.x1, this.shape.y1];
+    }
+  }, {
+    key: &quot;firstTwoPoints&quot;,
+    value: function firstTwoPoints() {
+      return [[this.shape.x1, this.shape.y1], [this.shape.x2, this.shape.y2]];
+    }
+  }, {
+    key: &quot;lastPoint&quot;,
+    value: function lastPoint() {
+      return [this.shape.x2, this.shape.y2];
+    }
+  }, {
+    key: &quot;lastTwoPoints&quot;,
+    value: function lastTwoPoints() {
+      return [[this.shape.x2, this.shape.y2], [this.shape.x1, this.shape.y1]];
+    }
+  }, {
+    key: &quot;setStartPoint&quot;,
+    value: function setStartPoint(x, y) {
+      this.shape.x1 = x;
+      this.shape.y1 = y;
+    }
+  }, {
+    key: &quot;setEndPoint&quot;,
+    value: function setEndPoint(x, y) {
+      this.shape.x2 = x;
+      this.shape.y2 = y;
+    }
+  }]);
+
+  return Line;
+}(Path);
+
+classUtil.mixin(Line, CableLike);
+var _default = Line;
+module.exports = _default;</pre>
+</body>
+</html>

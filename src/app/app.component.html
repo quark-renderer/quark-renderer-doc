@@ -21,7 +21,10 @@
                     <a routerLink="posts">{{'app.read' | translate}}</a>
                 </li>
                 <li routerLinkActive="active">
-                    <a routerLink="post/write">{{'app.write' | translate}}</a>
+                    <a routerLink="examples">{{'app.examples' | translate}}</a>
+                </li>
+                <li routerLinkActive="active">
+                    <a href="../api/index.html" target="_blank" rel="noopener">{{'app.api' | translate}}</a>
                 </li>
             </ul>
             <ul *ngIf="!currentUser?.userName" class="nav navbar-nav navbar-right" (click)="onMenuToggle()">

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+<span id='qrenderer-graphic-drag-DragDropMgr'>/**
+</span> * @class qrenderer.graphic.drag.DragDropMgr
+ * Global drag-drop manager, hold Ctrl for multi-selection.
+ * 
+ * 
+ * 全局拖拽管理器，支持同时拖拽多个元素，按住 Ctrl 键可以多选。
+ * 
+ * @author 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var DragDropMgr =
+/*#__PURE__*/
+function () {
+<span id='qrenderer-graphic-drag-DragDropMgr-method-constructor'>  /**
+</span>   * @method constructor DragDropMgr
+   * @param {GlobalEventDispatcher} dispatcher 
+   */
+  function DragDropMgr(dispatcher) {
+    _classCallCheck(this, DragDropMgr);
+
+    this.dispatcher = dispatcher;
+    this.selectionMap = new Map();
+  }
+
+  _createClass(DragDropMgr, [{
+    key: &quot;startListen&quot;,
+    value: function startListen() {
+      this.dispatcher.on(&#39;mousedown&#39;, this.dragStart, this);
+      return this;
+    }
+  }, {
+    key: &quot;stopListen&quot;,
+    value: function stopListen() {
+      this.clearSelectionMap();
+      this._draggingItem = null;
+      this._dropTarget = null;
+      this._x = 0;
+      this._y = 0;
+      this.dispatcher.off(&#39;mousedown&#39;, this.dragStart, this);
+      this.dispatcher.off(&#39;pagemousemove&#39;, this.dragging, this);
+      this.dispatcher.off(&#39;pagemouseup&#39;, this.dragEnd, this);
+      return this;
+    }
+<span id='qrenderer-graphic-drag-DragDropMgr-method-dragStart'>    /**
+</span>     * @private
+     * @method dragStart
+     * Start dragging.
+     * 
+     * 
+     * 开始拖动。
+     * @param {Event} e 
+     */
+
+  }, {
+    key: &quot;dragStart&quot;,
+    value: function dragStart(e) {
+      var _this = this;
+
+      var el = e.target;
+      var event = e.event;
+      this._draggingItem = el;
+
+      if (!el) {
+        this.clearSelectionMap();
+        return;
+      }
+
+      if (!el.draggable) {
+        return;
+      }
+
+      if (!event.ctrlKey &amp;&amp; !this.selectionMap.get(el.id)) {
+        this.clearSelectionMap();
+      }
+
+      el.dragging = true;
+      this.selectionMap.set(el.id, el);
+      this._x = e.offsetX;
+      this._y = e.offsetY;
+      this.dispatcher.on(&#39;pagemousemove&#39;, this.dragging, this);
+      this.dispatcher.on(&#39;pagemouseup&#39;, this.dragEnd, this);
+      this.selectionMap.forEach(function (el) {
+        _this.dispatcher.dispatchToElement(_this.normalizeParam(el, e), &#39;dragstart&#39;, e.event);
+      });
+    }
+<span id='qrenderer-graphic-drag-DragDropMgr-method-dragging'>    /**
+</span>     * @private
+     * @method dragging
+     * Dragging.
+     * 
+     * 
+     * 拖动过程中。
+     * @param {Event} e 
+     */
+
+  }, {
+    key: &quot;dragging&quot;,
+    value: function dragging(e) {
+      var _this2 = this;
+
+      var x = e.offsetX;
+      var y = e.offsetY;
+      var dx = x - this._x;
+      var dy = y - this._y;
+      this._x = x;
+      this._y = y;
+      this.selectionMap.forEach(function (el) {
+        if (el.beforeMove(dx, dy, e, el)) {
+          el.move(dx, dy, e);
+          el.afterMove(dx, dy, e, el);
+        }
+
+        _this2.dispatcher.dispatchToElement(_this2.normalizeParam(el, e), &#39;drag&#39;, e.event);
+      });
+      var dropTarget = this.dispatcher.findHover(x, y, this._draggingItem).target;
+      var lastDropTarget = this._dropTarget;
+      this._dropTarget = dropTarget;
+
+      if (this._draggingItem !== dropTarget) {
+        if (lastDropTarget &amp;&amp; dropTarget !== lastDropTarget) {
+          this.dispatcher.dispatchToElement(this.normalizeParam(lastDropTarget, e), &#39;dragleave&#39;, e.event);
+        }
+
+        if (dropTarget &amp;&amp; dropTarget !== lastDropTarget) {
+          this.dispatcher.dispatchToElement(this.normalizeParam(dropTarget, e), &#39;dragenter&#39;, e.event);
+        }
+      }
+    }
+<span id='qrenderer-graphic-drag-DragDropMgr-method-dragEnd'>    /**
+</span>     * @private
+     * @method dragEnd
+     * Drag end.
+     * 
+     * 
+     * 拖动结束。
+     * @param {Event} e 
+     */
+
+  }, {
+    key: &quot;dragEnd&quot;,
+    value: function dragEnd(e) {
+      var _this3 = this;
+
+      this.selectionMap.forEach(function (el) {
+        el.dragging = false;
+
+        _this3.dispatcher.dispatchToElement(_this3.normalizeParam(el, e), &#39;dragend&#39;, e.event);
+      });
+      this.dispatcher.off(&#39;pagemousemove&#39;, this.dragging, this);
+      this.dispatcher.off(&#39;pagemouseup&#39;, this.dragEnd, this);
+
+      if (this._dropTarget) {
+        this.dispatcher.dispatchToElement(this.normalizeParam(this._dropTarget, e), &#39;drop&#39;, e.event);
+      }
+
+      this._dropTarget = null;
+    }
+<span id='qrenderer-graphic-drag-DragDropMgr-method-normalizeParam'>    /**
+</span>     * @private
+     * @method normalizeParam
+     * @param {Element} target 
+     * @param {Event} e 
+     */
+
+  }, {
+    key: &quot;normalizeParam&quot;,
+    value: function normalizeParam(target, e) {
+      return {
+        target: target,
+        topTarget: e &amp;&amp; e.topTarget
+      };
+    }
+<span id='qrenderer-graphic-drag-DragDropMgr-method-getSelectedItems'>    /**
+</span>     * @method getSelectedItems
+     * Get all selected items.
+     * 
+     * 
+     * 获取当前选中的所有元素。
+     * @return {Map} selectionMap
+     */
+
+  }, {
+    key: &quot;getSelectedItems&quot;,
+    value: function getSelectedItems() {
+      return this.selectionMap;
+    }
+<span id='qrenderer-graphic-drag-DragDropMgr-method-clearSelectionMap'>    /**
+</span>     * @method clearSelectionMap
+     * Clear all selected items.
+     * 
+     * 
+     * 清除选中。
+     */
+
+  }, {
+    key: &quot;clearSelectionMap&quot;,
+    value: function clearSelectionMap() {
+      this.selectionMap.forEach(function (el) {
+        el.dragging = false;
+      });
+      this.selectionMap.clear();
+    }
+  }]);
+
+  return DragDropMgr;
+}();
+
+module.exports = DragDropMgr;</pre>
+</body>
+</html>

@@ -111,7 +111,8 @@
             "assets": [
               "src/assets",
               "src/mock-data",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/api"
             ]
           }
         },

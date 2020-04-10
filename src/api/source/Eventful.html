@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='qrenderer-event-Eventful'>/**
+</span> * @abstract
+ * @class qrenderer.event.Eventful
+ * 
+ * Provide event system for the classes that do not support events, the implementation here
+ * is similar to DOM events, the classes which need event support should mixin the functions
+ * here.
+ * 
+ * 
+ * 为不支持事件机制的类提供事件支持，基本机制类似 DOM 事件，需要事件机制的类可以 mixin 此类中的工具函数。
+ * 
+ * @author @Kener-林峰 &lt;kener.linfeng@gmail.com&gt;
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+
+<span id='qrenderer-event-Eventful-method-constructor'>/**
+</span> * @method constructor Eventful
+ * @param {Object} [eventProcessor] The object eventProcessor is the scope when
+ *        `eventProcessor.xxx` called. 事件处理者，也就是当前事件处理函数执行时的作用域。
+ * @param {Function} [eventProcessor.normalizeQuery]
+ *        param: {String|Object} Raw query.
+ *        return: {String|Object} Normalized query.
+ * @param {Function} [eventProcessor.filter] Event will be dispatched only
+ *        if it returns `true`.
+ *        param: {String} eventType
+ *        param: {String|Object} query
+ *        return: {Boolean}
+ * @param {Function} [eventProcessor.afterTrigger] Called after all handlers called.
+ *        param: {String} eventType
+ * @param {Function} [eventProcessor.afterListenerChanged] Called when any listener added or removed.
+ *        param: {String} eventType
+ */
+var Eventful = function Eventful(eventProcessor) {
+  this._$handlers = {};
+  this._$eventProcessor = eventProcessor;
+  this._$suspends = new Set();
+};
+
+Eventful.prototype = {
+  constructor: Eventful,
+  clearAll: function clearAll() {
+    this._$handlers = {};
+    this._$eventProcessor = null;
+    this._$suspends = new Set();
+  },
+
+<span id='qrenderer-event-Eventful-method-one'>  /**
+</span>   * @method
+   * The handler can only be triggered once, then removed.
+   *
+   * @param {String} event The event name.
+   * @param {String|Object} [query] Condition used on event filter.
+   * @param {Function} handler The event handler.
+   * @param {Object} context
+   */
+  one: function one(event, query, handler, context) {
+    return _on(this, event, query, handler, context, true);
+  },
+
+<span id='qrenderer-event-Eventful-method-on'>  /**
+</span>   * @method
+   * Bind a handler.
+   *
+   * @param {String} event The event name.
+   * @param {String|Object} [query] Condition used on event filter.
+   * @param {Function} handler The event handler.
+   * @param {Object} [context]
+   */
+  on: function on(event, query, handler, context) {
+    return _on(this, event, query, handler, context, false);
+  },
+
+<span id='qrenderer-event-Eventful-method-isSilent'>  /**
+</span>   * @method
+   * Whether any handler has bound.
+   *
+   * @param  {String}  event
+   * @return {Boolean}
+   */
+  isSilent: function isSilent(event) {
+    var _h = this._$handlers;
+    return !_h[event] || !_h[event].length;
+  },
+
+<span id='qrenderer-event-Eventful-method-off'>  /**
+</span>   * @method
+   * Unbind a event.
+   *
+   * @param {String} [event] The event name.
+   *        If no `event` input, &quot;off&quot; all listeners.
+   * @param {Function} [handler] The event handler.
+   *        If no `handler` input, &quot;off&quot; all listeners of the `event`.
+   */
+  off: function off(event, handler, context) {
+    var _h = this._$handlers;
+
+    if (!event) {
+      this._$handlers = {};
+      return this;
+    }
+
+    if (handler) {
+      if (_h[event]) {
+        var newList = [];
+
+        for (var i = 0, l = _h[event].length; i &lt; l; i++) {
+          if (_h[event][i].ctx !== context &amp;&amp; _h[event][i].h !== handler) {
+            newList.push(_h[event][i]);
+          }
+        }
+
+        _h[event] = newList;
+      }
+
+      if (_h[event] &amp;&amp; _h[event].length === 0) {
+        delete _h[event];
+      }
+    } else {
+      delete _h[event];
+    }
+
+    callListenerChanged(this, event);
+    return this;
+  },
+
+<span id='qrenderer-event-Eventful-method-trigger'>  /**
+</span>   * @method
+   * Trigger an event.
+   *
+   * @param {String} eventName The event name.
+   */
+  trigger: function trigger(eventName) {
+    if (this._$suspends.has(eventName)) {
+      return;
+    }
+
+    var _h = this._$handlers[eventName];
+    var eventProcessor = this._$eventProcessor;
+
+    if (_h) {
+      var args = arguments;
+      var argLen = args.length;
+
+      if (argLen &gt; 3) {
+        args = Array.prototype.slice.call(args, 1);
+      }
+
+      var len = _h.length;
+
+      for (var i = 0; i &lt; len;) {
+        var hItem = _h[i];
+
+        if (eventProcessor &amp;&amp; eventProcessor.filter &amp;&amp; hItem.query != null &amp;&amp; !eventProcessor.filter(eventName, hItem.query)) {
+          i++;
+          continue;
+        } // Optimize advise from backbone
+
+
+        switch (argLen) {
+          case 1:
+            hItem.h.call(hItem.ctx);
+            break;
+
+          case 2:
+            hItem.h.call(hItem.ctx, args[1]);
+            break;
+
+          case 3:
+            hItem.h.call(hItem.ctx, args[1], args[2]);
+            break;
+
+          case 4:
+            hItem.h.call(hItem.ctx, args[1], args[2], args[3]);
+            break;
+
+          case 5:
+            hItem.h.call(hItem.ctx, args[1], args[2], args[3], args[4]);
+            break;
+
+          default:
+            hItem.h.apply(hItem.ctx, args);
+            break;
+        }
+
+        if (hItem.one) {
+          _h.splice(i, 1);
+
+          len--;
+        } else {
+          i++;
+        }
+      }
+    }
+
+    eventProcessor &amp;&amp; eventProcessor.afterTrigger &amp;&amp; eventProcessor.afterTrigger(eventName);
+    return this;
+  },
+
+<span id='qrenderer-event-Eventful-method-suspend'>  /**
+</span>   * 被挂起的事件不会触发。在鼠标和触摸屏交互的过程中，经常需要把某个事件临时挂起，避免误触。
+   * @param {String} eventName 
+   */
+  suspend: function suspend(eventName) {
+    this._$suspends.add(eventName);
+  },
+
+<span id='qrenderer-event-Eventful-method-resume'>  /**
+</span>   * 恢复触发。
+   * @param {String} eventName 
+   */
+  resume: function resume(eventName) {
+    this._$suspends[&quot;delete&quot;](eventName);
+  },
+
+<span id='qrenderer-event-Eventful-method-triggerWithContext'>  /**
+</span>   * @method
+   * Dispatch a event with context, which is specified at the last parameter.
+   *
+   * @param {String} eventName The event name.
+   */
+  triggerWithContext: function triggerWithContext(eventName) {
+    var _h = this._$handlers[eventName];
+    var eventProcessor = this._$eventProcessor;
+
+    if (_h) {
+      var args = arguments;
+      var argLen = args.length;
+
+      if (argLen &gt; 4) {
+        args = Array.prototype.slice.call(args, 1, args.length - 1);
+      }
+
+      var ctx = args[args.length - 1];
+      var len = _h.length;
+
+      for (var i = 0; i &lt; len;) {
+        var hItem = _h[i];
+
+        if (eventProcessor &amp;&amp; eventProcessor.filter &amp;&amp; hItem.query != null &amp;&amp; !eventProcessor.filter(eventName, hItem.query)) {
+          i++;
+          continue;
+        } // Optimize advise from backbone
+
+
+        switch (argLen) {
+          case 1:
+            hItem.h.call(ctx);
+            break;
+
+          case 2:
+            hItem.h.call(ctx, args[1]);
+            break;
+
+          case 3:
+            hItem.h.call(ctx, args[1], args[2]);
+            break;
+
+          case 4:
+            hItem.h.call(ctx, args[1], args[2], args[3]);
+            break;
+
+          case 5:
+            hItem.h.call(ctx, args[1], args[2], args[3], args[4]);
+            break;
+
+          default:
+            hItem.h.apply(ctx, args);
+            break;
+        }
+
+        if (hItem.one) {
+          _h.splice(i, 1);
+
+          len--;
+        } else {
+          i++;
+        }
+      }
+    }
+
+    eventProcessor &amp;&amp; eventProcessor.afterTrigger &amp;&amp; eventProcessor.afterTrigger(eventName);
+    return this;
+  }
+};
+<span id='qrenderer-event-Eventful-method-callListenerChanged'>/**
+</span> * @private
+ * @method
+ * @param {Element} eventful 
+ * @param {String} eventType 
+ */
+
+function callListenerChanged(eventful, eventType) {
+  var eventProcessor = eventful._$eventProcessor;
+
+  if (eventProcessor &amp;&amp; eventProcessor.afterListenerChanged) {
+    eventProcessor.afterListenerChanged(eventType);
+  }
+}
+<span id='qrenderer-event-Eventful-method-normalizeQuery'>/**
+</span> * @private
+ * @method
+ * @param {*} host 
+ * @param {*} query 
+ */
+
+
+function normalizeQuery(host, query) {
+  var eventProcessor = host._$eventProcessor;
+
+  if (query != null &amp;&amp; eventProcessor &amp;&amp; eventProcessor.normalizeQuery) {
+    query = eventProcessor.normalizeQuery(query);
+  }
+
+  return query;
+}
+<span id='qrenderer-event-Eventful-method-_on'>/**
+</span> * @private
+ * @method
+ * @param {Element} eventful 
+ * @param {Event} event 
+ * @param {*} query 
+ * @param {Function} handler 
+ * @param {Object} context 
+ * @param {Boolean} isOnce 
+ */
+
+
+function _on(eventful, event, query, handler, context, isOnce) {
+  var _h = eventful._$handlers;
+
+  if (typeof query === &#39;function&#39;) {
+    context = handler;
+    handler = query;
+    query = null;
+  }
+
+  if (!handler || !event) {
+    return eventful;
+  }
+
+  query = normalizeQuery(eventful, query);
+
+  if (!_h[event]) {
+    _h[event] = [];
+  }
+
+  for (var i = 0; i &lt; _h[event].length; i++) {
+    if (_h[event][i].ctx === context &amp;&amp; _h[event][i].h === handler) {
+      return eventful;
+    }
+  }
+
+  var wrap = {
+    h: handler,
+    one: isOnce,
+    query: query,
+    ctx: context || eventful,
+    // FIXME
+    // Do not publish this feature util it is proved that it makes sense.
+    callAtLast: handler.qrEventfulCallAtLast
+  };
+  var lastIndex = _h[event].length - 1;
+  var lastWrap = _h[event][lastIndex];
+  lastWrap &amp;&amp; lastWrap.callAtLast ? _h[event].splice(lastIndex, 0, wrap) : _h[event].push(wrap);
+  callListenerChanged(eventful, event);
+  return eventful;
+}
+
+var _default = Eventful;
+module.exports = _default;</pre>
+</body>
+</html>

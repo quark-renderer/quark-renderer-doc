@@ -12,7 +12,9 @@
         "console": "管理后台",
         "userlist": "用户列表",
         "read": "阅读",
-        "write": "写作"
+        "write": "写作",
+        "examples": "实例",
+        "api": "API"
     },
     "post": {
         "publish": "发布文章"

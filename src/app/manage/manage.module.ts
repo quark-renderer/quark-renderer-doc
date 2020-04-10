@@ -13,7 +13,7 @@ import { PermissionTableComponent } from "./permission/permission-table/permissi
 import { PermissionEditComponent } from "./permission/permission-edit/permission-edit.component";
 import { SysParamComponent } from "./sys-param/sys-param.component";
 import { ChartComponent } from "./chart/chart.component";
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsModule } from "ngx-echarts";
 
 import { PostTableService } from "./content-mng/post-table/post-table.service";
 import { AuthGuard } from "../shared/auth-guard";
