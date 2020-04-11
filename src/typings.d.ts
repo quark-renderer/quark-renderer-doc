@@ -10,3 +10,5 @@ interface NodeModule {
   id: string;
   [key:string]: any;
 }
+
+declare var QuarkRenderer : any;

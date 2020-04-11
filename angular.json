@@ -25,7 +25,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/echarts/dist/echarts.js"
+              "node_modules/echarts/dist/echarts.js",
+              "node_modules/quark-renderer/dist/quark-renderer.js"
             ]
           },
           "configurations": {
@@ -102,9 +103,7 @@
             "main": "src/test.ts",
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
-            "scripts": [
-              "node_modules/echarts/dist/echarts.js"
-            ],
+            "scripts": [],
             "styles": [
               "src/styles.scss"
             ],
