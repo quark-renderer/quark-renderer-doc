@@ -7,8 +7,56 @@ let containerLeft = 0;
 
 let elementMapping = {
   "visio": QuarkRenderer.VisioLink,
-  "line": QuarkRenderer.Line
+  "line": QuarkRenderer.Line,
+  "image": QuarkRenderer.Image
 };
+
+let defautConfigMapping = {
+  "visio": {
+    position: [0, 0],
+    draggable: true,
+    isCable: true,
+    style: {
+        lineWidth: 2,
+        text: "This is Visio link."
+    },
+    shape: {
+        points: [
+            [10, 10],
+            [100, 10]
+        ]
+    }
+  },
+  "line": {
+      position: [0, 0],
+      draggable: true,
+      isCable: true,
+      style: {
+          lineWidth: 2,
+          text: "text on line"
+      },
+      shape: {
+          x1: 0,
+          y1: 0,
+          x2: 100,
+          y2: 0,
+          percent: 1
+      }
+  },
+  "image": {
+      position: [0, 0],
+      scale: [1, 1],
+      style: {
+          x: 0,
+          y: 0,
+          image: null,
+          width: 64,
+          height: 64
+      },
+      draggable: true,
+      linkable: true
+  }
+}
 
 const parkingSimulation = {
     dropZone: null,
@@ -76,41 +124,15 @@ function onDrop(event) {
 
       let offsetX = event.clientX - containerLeft;
       let offsetY = event.clientY - containerTop;
-
-      if (dragged.dataset && dragged.dataset.type === "visio") {
-        let Clazz = elementMapping[dragged.dataset.type];
-        let el = new Clazz({
-          position: [offsetX, offsetY],
-          draggable: true,
-          isCable: true,
-          style: {
-              lineWidth: 2,
-              text: "This is Visio link."
-          },
-          shape: {
-              points: [
-                  [10, 10],
-                  [500, 10]
-              ]
-          }
-        });
-        qr.add(el);
-      } else {
-          let image = new QuarkRenderer.Image({
-              position: [offsetX, offsetY],
-              scale: [1, 1],
-              style: {
-                  x: 0,
-                  y: 0,
-                  image: dragged.src,
-                  width: 64,
-                  height: 64
-              },
-              draggable: true,
-              linkable: true
-          });
-          qr.add(image);
-      }
+      if (!dragged.dataset || !dragged.dataset.type) { return; }
+      let Clazz = elementMapping[dragged.dataset.type];
+        let config = defautConfigMapping[dragged.dataset.type];
+        config.position = [offsetX, offsetY];
+        if (dragged.src) {
+          config.style.image = dragged.src
+        }
+        let instance = new Clazz(config);
+        qr.add(instance);
     }
 	}
 }
