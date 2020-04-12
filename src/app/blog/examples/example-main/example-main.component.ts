@@ -71,13 +71,11 @@ function onDragStart(event) {
     event.dataTransfer.effectAllowed = "copy";
     event.dataTransfer.setData("text/uri-list", imgSrc);
     event.dataTransfer.setData("text/plain", imgSrc);
-    event.target.style.opacity = .5;
 	}
 }
 
 function onDragEnd(event) {
 	if (event.target && event.target.nodeName == "IMG") {
-    event.target.style.opacity = "";
 	}
 }
 
@@ -86,8 +84,7 @@ function onDragOver(event) {
 }
 
 function onDragLeave(event) {
-  const target = event.target;
-	target.style.background = "";
+
 }
 
 function contains(list, value) {
@@ -105,10 +102,7 @@ function onDragEnter(event) {
 		if (isLink) {
 			event.preventDefault();
 			event.dataTransfer.dropEffect = "copy"
-      target.style.background = "#1f904e";
-    } else {
-      target.style.background = "#d51c00";
-		}
+    }
 	}
 }
 
@@ -117,10 +111,8 @@ function onDrop(event) {
 	const dragged = parkingSimulation.dragged;
 	if (dragged && target) {
 		const isLink = contains(event.dataTransfer.types, "text/uri-list");
-    target.style.background = "";
 		if (isLink) {
       event.preventDefault();
-      dragged.style.opacity = "";
 
       let offsetX = event.clientX - containerLeft;
       let offsetY = event.clientY - containerTop;
