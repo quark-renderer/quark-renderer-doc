@@ -4,14 +4,9 @@ import { RouterModule } from "@angular/router";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 
 import { PaginatorModule } from "primeng/paginator";
-import { PostDetailComponent } from "./post-detail/post-detail.component";
 import { PostListComponent } from "./post-list/post-list.component";
 import { PostHeadlineComponent } from "./post-headline/post-headline.component";
 import { PostService } from "./post.service";
-import { PostDetailMainComponent } from "./post-detail-main/post-detail-main.component";
-import { CommentListComponent } from "../comment-list/comment-list.component";
-
-import { CommentListService } from "../comment-list/comment-list.service";
 import { BooleanPipe } from "../../shared/pipes/boolean-pipe";
 
 import { PostRoutingModule } from "./post.routing.module";
@@ -27,15 +22,11 @@ import { PostRoutingModule } from "./post.routing.module";
     exports: [BooleanPipe],
     declarations: [
         PostListComponent,
-        PostDetailMainComponent,
-        PostDetailComponent,
-        CommentListComponent,
         BooleanPipe,
         PostHeadlineComponent
     ],
     providers: [
-        PostService,
-        CommentListService
+        PostService
     ]
 })
 export class PostModule { }

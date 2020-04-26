@@ -11,12 +11,6 @@ import { ToastModule } from "primeng/toast";
 import { MessageService } from "primeng/api";
 import { SharedModule } from "./shared/shared.module";
 import { AppComponent } from "./app.component";
-import { SignInService } from "./blog/user/sign-in/sign-in.service";
-import { RetrievePwdComponent } from "./blog/user/retrieve-pwd/retrieve-pwd.component";
-import { SignUpComponent } from "./blog/user/sign-up/sign-up.component";
-import { SignUpService } from "./blog/user/sign-up/sign-up.service";
-import { RetrievePwdService } from "./blog/user/retrieve-pwd/retrieve-pwd.service";
-import { EqualValidator } from "./blog/user/sign-up/equal-validator.directive";
 import { AppRoutingModule } from "./app.routing.module";
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -25,10 +19,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    AppComponent,
-    RetrievePwdComponent,
-    SignUpComponent,
-    EqualValidator
+    AppComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: "NiceFish" }),
@@ -50,9 +41,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     TranslateService,
     TranslateStore,
-    SignInService,
-    SignUpService,
-    RetrievePwdService,
     MessageService
   ],
   bootstrap: [AppComponent]
