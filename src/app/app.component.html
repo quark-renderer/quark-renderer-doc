@@ -30,23 +30,9 @@
                     <a href="../api/index.html" target="_blank" rel="noopener">{{'app.api' | translate}}</a>
                 </li>
             </ul>
-            <ul *ngIf="!currentUser?.userName" class="nav navbar-nav navbar-right" (click)="onMenuToggle()">
+            <ul class="nav navbar-nav navbar-right">
                 <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a routerLink="login"><i class="fa fa-sign-in"></i></a>
-                </li>
-                <li routerLinkActive="active">
-                    <a routerLink="register"><i class="fa fa-user-plus"></i></a>
-                </li>
-            </ul>
-            <ul *ngIf="currentUser?.userName" class="nav navbar-nav navbar-right" (click)="onMenuToggle()">
-                <li routerLinkActive="active">
-                    <a routerLink="home"><i class="fa fa-user"></i></a>
-                </li>
-                <li routerLinkActive="active">
-                    <a routerLink="manage"><i class="fa fa-cog"></i></a>
-                </li>
-                <li routerLinkActive="active">
-                    <a href="javascript:void(0);" (click)="doLogout()"><i class="fa fa-sign-out"></i></a>
+                    <a href="https://gitee.com/quark-renderer/quark-renderer" target="_blank"><i class="fa fa-github"></i></a>
                 </li>
             </ul>
         </div>
