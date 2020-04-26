@@ -14,7 +14,8 @@
         "read": "Read",
         "write": "Write",
         "examples": "Examples",
-        "api": "API"
+        "api": "API",
+        "documents": "Documents"
     },
     "post": {
         "publish": "publish"

@@ -1,0 +1,472 @@
+[
+    {
+        "id": "el-d9efd0c2-75ab-491e-3c08-e23878ec1aa7",
+        "name": "",
+        "type": "circle",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": true,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            208,
+            126
+        ],
+        "shape": {
+            "cx": 16,
+            "cy": 16,
+            "r": 16
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": "#fff",
+            "lineWidth": 2,
+            "image": "http://localhost:4200/assets/imgs/flow/start.png"
+        },
+        "linkable": true
+    },
+    {
+        "id": "el-98afef60-cdce-45f8-aa3b-3ce1a6c08cbe",
+        "name": "",
+        "type": "circle",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": true,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            203,
+            623
+        ],
+        "shape": {
+            "cx": 16,
+            "cy": 16,
+            "r": 16
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": "#fff",
+            "lineWidth": 4,
+            "image": "http://localhost:4200/assets/imgs/flow/end.png"
+        },
+        "linkable": true
+    },
+    {
+        "id": "el-817d431c-8415-4df5-9f2a-33dd726be421",
+        "name": "",
+        "type": "rect",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": true,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            192,
+            264
+        ],
+        "shape": {
+            "r": 5,
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 32
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": "#fff",
+            "lineWidth": 2,
+            "image": "http://localhost:4200/assets/imgs/flow/process.jpg"
+        },
+        "linkable": true
+    },
+    {
+        "id": "el-e2ded02e-2f61-449f-8160-2ffc7fb2a33e",
+        "name": "",
+        "type": "image",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": true,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            192,
+            376
+        ],
+        "shape": {},
+        "style": {
+            "x": 0,
+            "y": 0,
+            "image": "http://localhost:4200/assets/imgs/flow/decision.png",
+            "width": 64,
+            "height": 64
+        },
+        "linkable": true
+    },
+    {
+        "id": "el-350a9283-ce62-4575-aaaa-363bd3f72978",
+        "name": "",
+        "type": "rect",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": true,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            189,
+            518
+        ],
+        "shape": {
+            "r": 5,
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 32
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": "#fff",
+            "lineWidth": 2,
+            "image": "http://localhost:4200/assets/imgs/flow/process.jpg"
+        },
+        "linkable": true
+    },
+    {
+        "id": "el-accfe908-f826-44a5-1b3e-654ea4569b1d",
+        "name": "",
+        "type": "line",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": false,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            260,
+            207
+        ],
+        "shape": {
+            "x1": -35,
+            "y1": -47,
+            "x2": -35,
+            "y2": 57,
+            "percent": 1
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": null,
+            "lineWidth": 2,
+            "text": "text on line",
+            "image": "http://localhost:4200/assets/imgs/flow/line.png",
+            "font": null,
+            "textAlign": null
+        },
+        "fromId": "el-d9efd0c2-75ab-491e-3c08-e23878ec1aa7",
+        "toId": "el-817d431c-8415-4df5-9f2a-33dd726be421",
+        "fromPosition": "B",
+        "toPosition": "T",
+        "isCable": true
+    },
+    {
+        "id": "el-aa99d0e8-44df-4d78-0578-da52ceb88fb8",
+        "name": "",
+        "type": "visio",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": false,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            569,
+            535
+        ],
+        "shape": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 0,
+            "y2": 0,
+            "percent": 1,
+            "points": [
+                [
+                    -109,
+                    16
+                ],
+                [
+                    -109,
+                    45
+                ],
+                [
+                    -109,
+                    106
+                ],
+                [
+                    -302,
+                    106
+                ],
+                [
+                    -330,
+                    106
+                ]
+            ],
+            "smooth": false,
+            "smoothConstraint": null
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": null,
+            "lineWidth": 2,
+            "text": "This is Visio link.",
+            "image": "http://localhost:4200/assets/imgs/flow/vector-curve-line.png",
+            "font": null,
+            "textAlign": null
+        },
+        "fromId": "el-ed400cfa-f6aa-450d-0088-7e8028c89400",
+        "toId": "el-98afef60-cdce-45f8-aa3b-3ce1a6c08cbe",
+        "fromPosition": "B",
+        "toPosition": "R",
+        "isCable": true
+    },
+    {
+        "id": "el-aa965ccb-11e1-4421-bc1b-6c3d1b4e7d43",
+        "name": "",
+        "type": "line",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": false,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            253,
+            353
+        ],
+        "shape": {
+            "x1": -28,
+            "y1": -55,
+            "x2": -29,
+            "y2": 23,
+            "percent": 1
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": null,
+            "lineWidth": 2,
+            "text": "text on line",
+            "image": "http://localhost:4200/assets/imgs/flow/line.png",
+            "font": null,
+            "textAlign": null
+        },
+        "fromId": "el-817d431c-8415-4df5-9f2a-33dd726be421",
+        "toId": "el-e2ded02e-2f61-449f-8160-2ffc7fb2a33e",
+        "fromPosition": "B",
+        "toPosition": "T",
+        "isCable": true
+    },
+    {
+        "id": "el-c616b365-9582-4fdb-a6fb-1f955047758a",
+        "name": "",
+        "type": "rect",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": true,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            427,
+            392
+        ],
+        "shape": {
+            "r": 5,
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 32
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": "#fff",
+            "lineWidth": 2,
+            "image": "http://localhost:4200/assets/imgs/flow/process.jpg"
+        },
+        "linkable": true
+    },
+    {
+        "id": "el-430872f6-bf72-4499-9e82-48bcebff2473",
+        "name": "",
+        "type": "line",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": false,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            282,
+            413
+        ],
+        "shape": {
+            "x1": -26,
+            "y1": -5,
+            "x2": 145,
+            "y2": -4,
+            "percent": 1
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": null,
+            "lineWidth": 2,
+            "text": "text on line",
+            "image": "http://localhost:4200/assets/imgs/flow/line.png",
+            "font": null,
+            "textAlign": null
+        },
+        "fromId": "el-e2ded02e-2f61-449f-8160-2ffc7fb2a33e",
+        "toId": "el-c616b365-9582-4fdb-a6fb-1f955047758a",
+        "fromPosition": "R",
+        "toPosition": "L",
+        "isCable": true
+    },
+    {
+        "id": "el-42fe22d0-48a7-4489-9dfb-095aaea2c21b",
+        "name": "",
+        "type": "line",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": false,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            283,
+            504
+        ],
+        "shape": {
+            "x1": -59,
+            "y1": -64,
+            "x2": -61,
+            "y2": 14,
+            "percent": 1
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": null,
+            "lineWidth": 2,
+            "text": "text on line",
+            "image": "http://localhost:4200/assets/imgs/flow/line.png",
+            "font": null,
+            "textAlign": null
+        },
+        "fromId": "el-e2ded02e-2f61-449f-8160-2ffc7fb2a33e",
+        "toId": "el-350a9283-ce62-4575-aaaa-363bd3f72978",
+        "fromPosition": "B",
+        "toPosition": "T",
+        "isCable": true
+    },
+    {
+        "id": "el-d9ff81e7-0ff9-411e-ba28-c5ce55c50e58",
+        "name": "",
+        "type": "line",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": false,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            289,
+            560
+        ],
+        "shape": {
+            "x1": -67,
+            "y1": -8,
+            "x2": -68,
+            "y2": 63,
+            "percent": 1
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": null,
+            "lineWidth": 2,
+            "text": "text on line",
+            "image": "http://localhost:4200/assets/imgs/flow/line.png",
+            "font": null,
+            "textAlign": null
+        },
+        "fromId": "el-350a9283-ce62-4575-aaaa-363bd3f72978",
+        "toId": "el-98afef60-cdce-45f8-aa3b-3ce1a6c08cbe",
+        "fromPosition": "B",
+        "toPosition": "T",
+        "isCable": true
+    },
+    {
+        "id": "el-ed400cfa-f6aa-450d-0088-7e8028c89400",
+        "name": "",
+        "type": "rect",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": true,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            427,
+            517
+        ],
+        "shape": {
+            "r": 5,
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 32
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": "#fff",
+            "lineWidth": 2,
+            "image": "http://localhost:4200/assets/imgs/flow/process.jpg"
+        },
+        "linkable": true
+    },
+    {
+        "id": "el-a63d3f7a-5ae8-44da-9f51-095a4827619e",
+        "name": "",
+        "type": "line",
+        "ignore": false,
+        "invisible": false,
+        "draggable": true,
+        "transformable": false,
+        "hasTransformControls": false,
+        "showTransformControls": false,
+        "position": [
+            504,
+            518
+        ],
+        "shape": {
+            "x1": -44,
+            "y1": -92,
+            "x2": -44,
+            "y2": -1,
+            "percent": 1
+        },
+        "style": {
+            "stroke": "#000",
+            "fill": null,
+            "lineWidth": 2,
+            "text": "text on line",
+            "image": "http://localhost:4200/assets/imgs/flow/line.png",
+            "font": null,
+            "textAlign": null
+        },
+        "fromId": "el-c616b365-9582-4fdb-a6fb-1f955047758a",
+        "toId": "el-ed400cfa-f6aa-450d-0088-7e8028c89400",
+        "fromPosition": "B",
+        "toPosition": "T",
+        "isCable": true
+    }
+]

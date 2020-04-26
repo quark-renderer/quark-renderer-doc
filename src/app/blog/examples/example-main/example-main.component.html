@@ -1,33 +1,36 @@
-<div class="container" [@flyIn]="'active'" draggable="false">
+<p-dialog header="JSON" [(visible)]="display" [modal]="true" [style]="{width: '50vw'}">
+    {{content}}
+</p-dialog>
+
+<div class="container" [@flyIn]="'active'" draggable="false">    
     <div class="row" draggable="false">
         <div class="col-md-3" draggable="false">
             <p-accordion [multiple]="true">
-                <p-accordionTab header="连接线">
-                    Content 1
-                </p-accordionTab>
-                <p-accordionTab header="组">
-                    Content 2
-                </p-accordionTab>
                 <p-accordionTab header="流程图">
                     <div class="elements">
                         <div class="row">
                             <div class="col-md-3">
-                                <img data-type='image' draggable='true' src="/assets/imgs/flow/terminator.jpg" class="thumbnail" style="width:64px;height:64px;">
+                                <img data-type='start' draggable='true' src="/assets/imgs/flow/start.png" class="thumbnail" style="width:64px;height:64px;">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
-                                <img data-type='image' draggable='true' src="/assets/imgs/flow/process.jpg" class="thumbnail" style="width:64px;height:64px;">
+                                <img data-type='end' draggable='true' src="/assets/imgs/flow/end.png" class="thumbnail" style="width:64px;height:64px;">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
-                                <img data-type='image' draggable='true' src="/assets/imgs/flow/decision.jpg" class="thumbnail" style="width:64px;height:64px;">
+                                <img data-type='process' draggable='true' src="/assets/imgs/flow/process.jpg" class="thumbnail" style="width:64px;height:64px;">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
-                                <img data-type='image' draggable='true' src="/assets/imgs/flow/database.jpg" class="thumbnail" style="width:64px;height:64px;">
+                                <img data-type='image' draggable='true' src="/assets/imgs/flow/decision.png" class="thumbnail" style="width:64px;height:64px;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img data-type='image' draggable='true' src="/assets/imgs/flow/database.png" class="thumbnail" style="width:64px;height:64px;">
                             </div>
                         </div>
                         <div class="row">
@@ -42,9 +45,6 @@
                         </div>
                     </div>
                 </p-accordionTab>
-                <p-accordionTab header="BPMN">
-                    Content 3
-                </p-accordionTab>
             </p-accordion>
         </div>
         <div class="col-md-9">
@@ -53,7 +53,8 @@
                     <div class="btn-group" role="group" aria-label="First group">
                         <!-- <button type="button" class="btn btn-default">撤销</button>
                         <button type="button" class="btn btn-default">恢复</button> -->
-                        <button type="button" class="btn btn-default">保存</button>
+                        <button type="button" class="btn btn-default" (click)="loadFlow()">加载</button>
+                        <button type="button" class="btn btn-default" (click)="saveFlow()">保存</button>
                         <!-- <button type="button" class="btn btn-default">直线</button>
                         <button type="button" class="btn btn-default">折线</button>
                         <button type="button" class="btn btn-default">曲线</button>

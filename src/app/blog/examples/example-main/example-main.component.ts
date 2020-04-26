@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { flyIn } from "../../../shared/animations/fly-in";
+import { ExamplesService } from "../examples.service";
 
 let qr = null;
 let containerTop = 0;
@@ -8,7 +9,10 @@ let containerLeft = 0;
 let elementMapping = {
   "visio": QuarkRenderer.VisioLink,
   "line": QuarkRenderer.Line,
-  "image": QuarkRenderer.Image
+  "image": QuarkRenderer.Image,
+  "start": QuarkRenderer.Circle,
+  "end": QuarkRenderer.Circle,
+  "process": QuarkRenderer.Rect
 };
 
 let defautConfigMapping = {
@@ -52,6 +56,51 @@ let defautConfigMapping = {
           image: null,
           width: 64,
           height: 64
+      },
+      draggable: true,
+      linkable: true
+  },
+  "start": {
+      position: [0, 0],
+      shape: {
+          cx: 16,
+          cy: 16,
+          r: 16
+      },
+      style: {
+          stroke: "#000",
+          fill: "#fff",
+          lineWidth: 2
+      },
+      draggable: true,
+      linkable: true
+  },
+  "end": {
+      position: [0, 0],
+      shape: {
+          cx: 16,
+          cy: 16,
+          r: 16
+      },
+      style: {
+          stroke: "#000",
+          fill: "#fff",
+          lineWidth: 4
+      },
+      draggable: true,
+      linkable: true
+  },
+  "process": {
+      position: [0, 0],
+      shape: {
+          r: 5,
+          width: 64,
+          height: 32
+      },
+      style: {
+          stroke: "#000",
+          fill: "#fff",
+          lineWidth: 2
       },
       draggable: true,
       linkable: true
@@ -118,13 +167,13 @@ function onDrop(event) {
       let offsetY = event.clientY - containerTop;
       if (!dragged.dataset || !dragged.dataset.type) { return; }
       let Clazz = elementMapping[dragged.dataset.type];
-        let config = defautConfigMapping[dragged.dataset.type];
-        config.position = [offsetX, offsetY];
-        if (dragged.src) {
-          config.style.image = dragged.src
-        }
-        let instance = new Clazz(config);
-        qr.add(instance);
+      let config = defautConfigMapping[dragged.dataset.type];
+      config.position = [offsetX, offsetY];
+      if (dragged.src) { // image
+        config.style.image = dragged.src
+      }
+      let instance = new Clazz(config);
+      qr.add(instance);
     }
 	}
 }
@@ -145,8 +194,12 @@ function offset(el) {
   ]
 })
 export class ExampleMainComponent implements OnInit {
+  display = false;
+  content = "";
 
-  constructor() { }
+  constructor(private examplesService: ExamplesService) {
+
+  }
 
   ngOnInit() {
   }
@@ -168,5 +221,22 @@ export class ExampleMainComponent implements OnInit {
     dropZone.addEventListener("drop", onDrop);
 
     qr = QuarkRenderer.init(document.getElementById("dropZone"));
+  }
+
+  saveFlow(): void {
+    this.display = true;
+    let json = qr.toJSONObject();
+    json = JSON.stringify(json);
+    this.content = json;
+  }
+
+  loadFlow(): void {
+    this.examplesService.loadFlow()
+      .subscribe(
+        data => {
+          qr.fromJSONObject(data);
+        },
+        error => console.error(error)
+      );
   }
 }
