@@ -12,13 +12,14 @@
                 <span class="icon-bar"></span>
             </button>
             <a routerLink="posts" class="navbar-brand-my">
-                <img src="assets/imgs/nice-fish.png" width="45">
+                <!-- https://thenounproject.com/search/?q=Nautilus&i=160350 -->
+                <img src="assets/imgs/nautilus.png" width="32">
             </a>
         </div>
         <div class="navbar-collapse collapse" [ngClass]="{'in':showToggleMenu===true}">
             <ul class="nav navbar-nav" (click)="onMenuToggle()">
                 <li routerLinkActive="active">
-                    <a routerLink="posts">快速上手</a>
+                    <a routerLink="posts">主页</a>
                 </li>
                 <li routerLinkActive="active">
                     <a routerLink="examples">{{'app.examples' | translate}}</a>
@@ -32,7 +33,8 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a href="https://gitee.com/quark-renderer/quark-renderer" target="_blank"><i class="fa fa-github"></i></a>
+                    <!-- <a href="https://gitee.com/quark-renderer/quark-renderer" target="_blank"><i class="fa fa-github"></i></a> -->
+                    <a href='https://gitee.com/quark-renderer/quark-renderer'><img src='https://gitee.com/quark-renderer/quark-renderer/badge/star.svg?theme=gvp' alt='star'/></a> 
                 </li>
             </ul>
         </div>
