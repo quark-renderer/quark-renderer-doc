@@ -1,117 +1,235 @@
 <p align="center">
-    <img width="150" src="./src/assets/imgs/nice-fish.png">
+    <img width="150" src="./src/assets/imgs/nautilus.png">
 </p>
 
-<h1 align="center">NiceFish</h1>
+<h1 align="center">QuarkRenderer</h1>
 
-<div align="left">
-NiceFish（美人鱼） 是一个系列项目，目标是示范前后端分离的开发模式:前端浏览器、移动端、Electron 环境中的各种开发模式；后端有两个版本：SpringBoot 版本和 SpringCloud 版本。
-</div>
+一款轻量且强大的 Canvas(&SVG) 渲染引擎，从 [ZRender](https://github.com/ecomfe/zrender) 改进而来。
+
+## 背景
+
+**重要：Quark Renderer 不是从零开始构建的，它是从 ZRender 魔改而来，ZRender 是 ECharts 底层的渲染引擎。**
+
+我已经使用 ECharts 和 ZRender 很多年，在图形化领域，这两款工具都极其强大。
+
+为了更好地理解 ZRender 底层的设计思想，最近我花了一些时间通读了它的源代码（2020-01）。在这个过程中，重构了大量的代码和注释，因为：
+
+- 我想要一个定制化的版本，方便将来实现一些很酷的功能。
+- 我想要一个更加干净的代码仓库，方便用来教我的学生们如何理解和设计一款 canvas 引擎，用于浏览器环境和微信小程序。
+- 我想让引擎本身的代码变得更加易读一些。
+- 之所以重新起了一个名字，主要原因有两个：首先，ZRender 默认会在全局空间里面导出一个全局变量 'zrender'，所以起一个新的名字可以避免潜在的命名冲突问题。其次，在 npm registry 里面不允许创建重名的项目。
+
+与 ZRender 原始的实现相比，我的这个版本重点提升了这些特性：
+- 用 ES6 语法重构了所有 class 和 .js 文件。
+- 添加了键盘事件支持。
+- 可以同时拖拽多个元素，按住 Ctrl 键复选。
+- 为了让源代码更好理解，大幅度重构了 .js 文件和目录结构。
+- 为了理解方便，重构了大量的实现细节。
+- 修复了 /test 目录下一些案例中的 bug ，新增了一些测试案例。
+- 用 [jsduck](https://github.com/senchalabs/jsduck) 来自动生成 API 文档，文档格式更加优美。
+- 为了让 jsduck 能更好地生成文档，重构了所有代码注释。
+- 直接支持微信小程序，不需要任何 hack。（还有一些问题需要解决）
+- 直接支持 node-canvas，不需要任何 hack。（还有一些问题需要解决）
+- 删掉了 VML 引擎，因为现在 IE 的市场份额已经很小了。
+- 给仿射变换系统增加了 skew 特性。
+- 给元素加上了变换控制手柄。
+- 增加了连线功能，可以把元素连接起来，包括很酷的 Visio 形的连线。
+- 重构了 Group 的实现，可以多层嵌套并控制子元素的位置。
 
 ## 用法
 
-打开终端，依次执行以下命令：
+- 把本仓库 pull 到你本地。
+- 在项目根目录运行 npm build 。
+- 在你的浏览器中打开 /test 目录下提供的案例。
 
-    git clone https://gitee.com/mumu-osc/NiceFish.git
-    cd NiceFish
-    npm i -g @angular/cli
-    npm i
-    ng serve --open
+浏览器环境中的用法：
 
-打开浏览器，访问http://localhost:4200/
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Animation</title>
+    <script src="../dist/quark-renderer.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        html, body, #main {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+    <script type="text/javascript">
+        let main = document.getElementById('main');
+        let qr = QuarkRenderer.init(main);
+        
+        let gradient = new QuarkRenderer.LinearGradient();
+        gradient.addColorStop(0, 'red');
+        gradient.addColorStop(1, 'black');
 
-**中文开发者**：网络原因，推荐安装 nrm 来管理 npm 的 registry。
+        let circle = new QuarkRenderer.Circle({
+            position: [0, 0],
+            scale: [1, 1],
+            shape: {
+                cx: 50,
+                cy: 50,
+                r: 50
+            },
+            style: {
+                fill: gradient,
+                lineWidth: 5,
+                text:'circle',
+                textPosition:'inside'
+            }
+        });
+        qr.add(circle);
+        
+        // first animation process
+        circle.animate()
+            .when(1000, {
+                position: [200, 0],
+                scale: [2, 1]
+            })
+            .when(2000, {
+                position: [200, 200],
+                scale: [1, 1]
+            })
+            .when(3000, {
+                position: [0, 200],
+                scale: [1, 2]
+            })
+            .when(4000, {
+                position: [0, 0],
+                scale: [1, 1]
+            })
+            .during(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .done(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .start();//.start(true)
 
-    npm i -g nrm 
-    nrm use cnpm
+        //second animation process
+        circle.animate()
+            .when(1000, {
+                position: [500, 0],
+                scale: [2, 1]
+            })
+            .when(2000, {
+                position: [200, 200],
+                scale: [1, 1]
+            })
+            .when(3000, {
+                position: [0, 200],
+                scale: [1, 2]
+            })
+            .when(4000, {
+                position: [0, 0],
+                scale: [1, 1]
+            })
+            .during(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .done(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .start();//.start(true)
+    </script>
+</body>
+</html>
+```
 
-这时候用 npm 安装 node 模块就会使用 cnpm 提供的 registry 了。
+微信小程序中的用法：
 
-## 常见坑点
+```html
+<view class="page">
+    <view class="page__hd">
+        <view class="page__title">Quark Renderer 小程序示例1</view>
+    </view>
+    <view class="page__bd page__bd_spacing">
+        <view style="width:100%;height:500px;">
+            <canvas style="width: 300px; height: 500px;" canvas-id="firstCanvas"></canvas>
+        </view>
+    </view>
+</view>
+```
 
-* 中文开发者：如果你使用 cnpm 来安装依赖，可能会导致某些包不一致，导致应用起不来，目前原因不明，需要 cnpm 官方来解决。
-* 如果你想让打包体积更小，请使用参数构建：ng serve --prod
-* 构建最终结果：ng build --prod
-* 如果之前装过@angular/cli 需要先卸载：npm uninstall -g @angular/cli
-* 如果之前装过老版本的 angular-cli 需要先卸载：npm uninstall -g angular-cli
-* 如果你之前已经尝试用npm install安装过 node 模块，请把 NiceFish 根目录下的 node_moduels 目录删掉重新 npm install
-* 命令行删除 node_modules 速度更快，Windows 平台使用： rmdir /s/q node_modules ，*nix平台使用：sudo rm -rf node_modules
-* 如果你需要把项目发布到其它类型的 Server 上，例如 Tomcat，需要对 Server 进行一些简单的配置才能支持 HTML5 下的 PushState 路由模式，请从以下链接里面查找对应的配置方式：https://github.com/angular-ui/ui-router/wiki/Frequently-Asked-Questions ，在
-How to: Configure your server to work with html5Mode 这个小节里面把常见的 WEB 容器的配置方式都列举出来了，包括：IIS、Apache、nginx、NodeJS、Tomcat 全部都有。
+```javascript
+onReady: function () {
+    let ctx = wx.createCanvasContext('firstCanvas');
+    //注意这里的初始化参数，因为微信小程序不允许操作 DOM，所以引擎不能自动获取到宽度高度，这里需要手动传进去
+    let qr = QuarkRenderer.init(ctx,{width:300,height:500,renderer:'canvas'});
+    let polygon = new QuarkRenderer.Polygon({
+        position: [100, 100],
+        scale: [1, 1],
+        style: {
+            fill: 'red'
+        }
+    });
 
-## 主要依赖
+    setInterval(function () {
+        let len = Math.round(Math.random() * 100);
+        let points = [];
+        let r = (Math.random() * 100);
+        for (let i = 0; i <= len; i++) {
+            let phi = i / len * Math.PI * 2;
+            let x = Math.cos(phi) * r + 100;
+            let y = Math.sin(phi) * r + 100;
+            points.push([x, y]);
+        }
+        polygon.animateTo({
+            shape: {
+                points: points
+            }
+        }, 500, 'cubicOut');
+    }, 1000);
+    qr.add(polygon);
+}
+```
 
-- Angular 8.0
-- PrimeNG 8.0.2
-- Bootstrap 3.3.7
-- Echarts 4.1.0
-- ngx-echarts 4.1.0
-- ckeditor5-angular 1.1.0
+## 文档
 
-**注意：为了防止依赖冲突，本项目在 package.json 中锁定了所有 Node 模块版本，如有需要，您可以自己测试兼容版本号。**
-
-## 系列项目
-
-|  名称   | 描述  |
-|  ----  | ----  |
-| NiceFish（美人鱼）  | 这是一个系列项目，目标是示范前后端分离的开发模式:前端浏览器、移动端、Electron 环境中的各种开发模式。后端有两个版本：SpringBoot 版本和 SpringCloud 版本，Angular 版本的前端代码基于 Angular 8.0 + PrimeNG 7.1.0。http://git.oschina.net/mumu-osc/NiceFish/ |
-| nicefish-ionic  | 这是一个移动端的 demo，基于 ionic，此项目已支持 PWA。http://git.oschina.net/mumu-osc/nicefish-ionic |
-| NiceBlogElectron  | 这是一个基于 Electron 的桌面端项目，把 NiceFish 用 Electron 打包成了一个桌面端运行的程序。这是由 ZTE 中兴通讯的前端道友提供的，我 fork 了一个，有几个 node 模块的版本号老要改，如果您正在研究如何利用 Electron 开发桌面端应用，请参考这个项目，https://github.com/damoqiongqiu/NiceBlogElectron|
-| OpenWMS  | 用来示范管理后台型系统的最佳实践，https://gitee.com/mumu-osc/OpenWMS-Frontend|
-| nicefish-springboot  | 用来示范前后端分离模式下，前端代码与后端服务的对接方式，已经完成了基线版本，并且在腾讯云上面做了实际的部署。代码仓库在这里： https://gitee.com/mumu-osc/nicefish-spring-boot ，腾讯云上的演示地址在这里： http://118.25.136.164 ，以此为基础，你可以继续开发出适合自己业务场景的代码。|
-| nicefish-springcloug  | 用来示范前后端分离模式下，前端代码与分布式后端服务的对接方式，即将完成，代码最近放出。|
-
-## 线上演示
-
-http://118.25.136.164
-
-## 界面截图
-
-<img src="./src/assets/imgs/1.png">
+API 文档位于 /api 目录下，在你的浏览器中打开 /api/index.html 就可以看到很漂亮的 API 文档了，风格与 Sencha(ExtJS) 相同。
 
 <img src="./src/assets/imgs/2.png">
 
-<img src="./src/assets/imgs/3.png">
+## 屏幕截图
 
-<img src="./src/assets/imgs/4.png">
+<img src="./src/assets/imgs/1.gif">
+<br/>
+<img src="./src/assets/imgs/2.gif">
+<br/>
+<img src="./src/assets/imgs/3.gif">
+<br/>
+<img src="./src/assets/imgs/5.gif">
+<br/>
+<img src="./src/assets/imgs/6.gif">
+<br/>
+<img src="./src/assets/imgs/7.gif">
+<br/>
+<img src="./src/assets/imgs/8.gif">
+<br/>
+<img src="./src/assets/imgs/9.gif">
+<br/>
+<img src="./src/assets/imgs/10.gif">
+VisioLink， 像 Microsoft Visio 中的那种连接线效果。
+<br/>
+<img src="./src/assets/imgs/1.png">
 
-<img src="./src/assets/imgs/5.png">
+微信小程序示例：
 
-<img src="./src/assets/imgs/6.png">
-
-<img src="./src/assets/imgs/7.png">
-
-## 打包分析
-
-以下是用 webpack-bundle-analyzer 分析打包之后的模块构成：
-
-<img src="./src/assets/imgs/bundle-report.png">
-
-看起来CKEditor和ECharts占了很大的体积，需要做一下异步加载。
-
-webpack-bundle-analyzer 使用方法：
-
-- npm i webpack-bundle-analyzer --save-dev
-- package.json 的 scripts 配置里面加一行 "bundle-report": "webpack-bundle-analyzer dist/stats.json"
-- ng build --prod --stats-json 编译（--stats-json 选项会生成一份stats.json配置文件）
-- 执行 npm run bundle-report 查看打包过程
+<img src="./src/assets/imgs/4.gif">
 
 ## 学习资源
 
-- 历次演讲中的所有 PPT 已经本项目对应的资料都在这里，您可以随意使用，https://gitee.com/mumu-osc/NiceFish/attach_files 。
-- Angular开发者论坛在这里：http://www.ngfans.net/ 。
+[https://cloud.tencent.com/edu/learning/live-1902?ADTAG=xyj ](https://cloud.tencent.com/edu/learning/live-1902?ADTAG=xyj )
 
-这是2018年录制的付费视频教程，现在已经过去了快2年，我把它公开出来，免费播放。虽然版本号不是最新的，但是核心的思路和用法基本相同，希望能帮助到有需要的人。
 
-- bilibili 地址：https://www.bilibili.com/video/av87528565
-- 油管地址：https://www.youtube.com/watch?v=sIa_KF0cUnE&list=PLbhC27Bf6WlmpDh_66g7Fpn8uCYG7jUn8
+## License
 
-## 联系我
+BSD 3-Clause License
 
-<img src="./src/assets/imgs/damoqiongqiu-wechat.jpg" width="250"/>
-
-（不要随意加我，我这个人脾气不好，万一咱俩尿不到一个壶里弄到最后连朋友都没得做，还是做个点赞之交，就挺好。）
-
-## 开源许可证
-
-MIT
+[LICENSE](./LICENSE)
