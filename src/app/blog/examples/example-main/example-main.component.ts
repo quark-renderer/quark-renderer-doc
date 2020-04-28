@@ -157,20 +157,19 @@ function onDragEnter(event) {
 
 function onDrop(event) {
 	const target = event.target;
-	const dragged = parkingSimulation.dragged;
+  const dragged = parkingSimulation.dragged;
 	if (dragged && target) {
 		const isLink = contains(event.dataTransfer.types, "text/uri-list");
 		if (isLink) {
       event.preventDefault();
-
       let offsetX = event.clientX - containerLeft;
       let offsetY = event.clientY - containerTop;
       if (!dragged.dataset || !dragged.dataset.type) { return; }
       let Clazz = elementMapping[dragged.dataset.type];
       let config = defautConfigMapping[dragged.dataset.type];
       config.position = [offsetX, offsetY];
-      if (dragged.src) { // image
-        config.style.image = dragged.src
+      if (dragged.dataset.type === "image") {
+        config.style.image = dragged.getAttribute("src");
       }
       let instance = new Clazz(config);
       qr.add(instance);
