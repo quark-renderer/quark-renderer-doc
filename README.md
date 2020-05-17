@@ -4,31 +4,30 @@
 
 <h1 align="center">QuarkRenderer</h1>
 
+This is the document project for Quark Renderer.
 
-这是 Quark Renderer 项目的文档和主页。
+The code for Quark Renderer itself is here: https://gitee.com/quark-renderer/quark-renderer.
 
-Quark Renderer 自身的代码在这里 https://gitee.com/quark-renderer/quark-renderer
+## Usage
 
-## 用法
-
-打开终端，依次执行以下命令：
+Open your terminal, execute the following commands in turn:
 
     git clone https://gitee.com/quark-renderer/quark-renderer-doc.git
-    cd NiceFish
+    cd quark-renderer-doc
     npm i -g @angular/cli
     npm i
     ng serve --open
 
-打开浏览器，访问http://localhost:4200/
+Open your browser and visit: http://localhost:4200/
 
-**中文开发者**：网络原因，推荐安装 nrm 来管理 npm 的 registry。
+** Developers in China**: Due to the network issue, I recommand you to use nrm to manage the npm registry.
 
     npm i -g nrm 
     nrm use cnpm
 
-这时候用 npm 安装 node 模块就会使用 cnpm 提供的 registry 了。
+Then npm will use the cnpm registry to install node modules.
 
-## 学习资源
+## Learning Rersources
 
 [https://cloud.tencent.com/edu/learning/live-1902?ADTAG=xyj ](https://cloud.tencent.com/edu/learning/live-1902?ADTAG=xyj )
 
